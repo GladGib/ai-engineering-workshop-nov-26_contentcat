@@ -1,8 +1,8 @@
-# 🎬 Studio Manager
+# 🐱 Content Cat
 
 An agentic content assistant for a B2B marketing team. **Demo client: the DELMIA Quintiq marketing team** (unofficial demo, all data is mock).
 
-The team films product demos, plant b-roll, expo booths and explainers, then publishes a fraction as LinkedIn, Reels and YouTube content. Studio Manager finds footage, writes on-brand social scripts from real clips (with a brand-compliance critic: no unapproved claims, no customer names), and drafts storage-saving plans that the content lead must approve. It never deletes.
+The team films product demos, plant b-roll, expo booths and explainers, then publishes a fraction as LinkedIn, Reels and YouTube content. Content Cat finds footage, writes on-brand social scripts from real clips (with a brand-compliance critic: no unapproved claims, no customer names), and drafts storage-saving plans that the content lead must approve. It never deletes.
 
 **Stack:** Google ADK · Gemini `gemini-3.5-flash` · SQLite · Streamlit
 

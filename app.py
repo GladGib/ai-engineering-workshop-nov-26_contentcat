@@ -1,4 +1,4 @@
-"""🎬 Studio Manager — Enterprise Agentic AI Capstone (single-file app).
+"""🐱 Content Cat — Enterprise Agentic AI Capstone (single-file app).
 
 Demo client: the DELMIA Quintiq marketing team (unofficial demo, MOCK data only).
 A media asset assistant for their social content: find footage, plan safe storage
@@ -43,7 +43,7 @@ DB_FILE = str(BASE / "studio.db")
 POLICY_DIR = BASE / "policies"
 APPROVALS_LOG = BASE / "approvals_log.json"
 
-st.set_page_config(page_title=APP_NAME, page_icon="🎬", layout="wide")
+st.set_page_config(page_title=APP_NAME, page_icon="🐱", layout="wide")
 
 # ---- Look & feel: glassmorphism + DELMIA-inspired navy/cyan (CSS only, no behaviour) ----
 GLASS_CSS = """
@@ -466,7 +466,7 @@ def build_ffmpeg_plan(clip_ids: list[str], crf: int = 24) -> dict:
 # =============================================================================
 # 5. CALLBACKS: input guardrail + cost telemetry
 # =============================================================================
-ROOT = "studio_manager"
+ROOT = "content_cat"
 PII = [
     (re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+"), "[REDACTED_EMAIL]"),
     (re.compile(r"\b\d{6}-\d{2}-\d{4}\b"), "[REDACTED_IC]"),
@@ -587,7 +587,7 @@ def build_agents() -> LlmAgent:
         sub_agents=[picker, writer, ParallelAgent(name="critics", sub_agents=[hook, brand]), final])
 
     return _agent(ROOT, "Studio coordinator.",
-                  "You are Studio Manager, the content assistant for the DELMIA Quintiq marketing team. Route each "
+                  "You are Content Cat, the content assistant for the DELMIA Quintiq marketing team. Route each "
                   "request to ONE tool: library_analyst (facts about clips/shoots/projects/any table), storage_planner (freeing "
                   "space, compression, savings), content_pipeline (scripts, captions). Pass the full request. Show "
                   "content_pipeline output unchanged; otherwise answer briefly and friendly. Never delete footage "
@@ -692,7 +692,7 @@ def write_log(entry):
 
 
 with st.sidebar:
-    st.title(f"🎬 {APP_NAME}")
+    st.title(f"🐱 {APP_NAME}")
     st.caption(f"Client: **{CLIENT}** · unofficial demo, mock data")
     st.caption(f"`{MODEL}` · ADK coordinator + MCP-style tools")
     if api_key:
