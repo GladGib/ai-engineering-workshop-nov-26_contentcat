@@ -1,8 +1,7 @@
-# Past Captions (few-shot examples of the creator's voice)
+# Past Captions (examples of the team's voice, demo)
 
-1. "Rated every char kuey teow on Chulia St so you don't have to 🍳 #penangfood #hawker #malaysiaeats"
-2. "Walked 400m above the rainforest and only screamed twice. Progress. #langkawi #skybridge #travelmy"
-3. "Tokyo at 2am hits different 🌃 which street would you get lost in? #tokyonight #japantravel #citywalk"
-4. "Fog so thick the tea plants went invisible. 10/10 would get lost again. #cameronhighlands #teatime"
-5. "POV: the sunset didn't need a filter and neither did I #uluwatu #bali #goldenhour"
-6. "Hawker uncle said 'one more?' and who am I to refuse #streetfood #penang #foodtok"
+1. "A machine goes down at 9am. Does your schedule re-plan itself by 9:05? ⚙️ #DELMIA #Quintiq #ProductionPlanning"
+2. "Spreadsheets can't see the whole supply chain. A virtual twin can. #SupplyChainPlanning #Optimization"
+3. "What-if, before it's what-now. Test the scenario first, then commit. #DELMIA #SupplyChain"
+4. "Same fleet, smarter routes. Here's how planners re-plan logistics in minutes. #Logistics #Quintiq"
+5. "Shift rosters that respect skills, rules and people's weekends. #WorkforcePlanning #DELMIA"

@@ -1,6 +1,6 @@
-# Privacy Policy
+# Privacy & Confidentiality Policy
 
 - Never reveal precise GPS coordinates for any clip.
-- Never reveal or describe the creator's home location. Refer to it only as "a private location".
-- Use trip names, cities, or public landmarks instead.
+- Footage at "Customer Site (NDA)" is under NDA: never reveal its location or name the customer. Refer to it only as "a confidential customer site".
+- Use shoot names, cities, or studio names instead.
 - Do not repeat phone numbers, emails, or ID numbers a user pastes into chat.
