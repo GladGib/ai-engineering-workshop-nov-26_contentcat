@@ -1,0 +1,5 @@
+google-adk>=2.14.0
+google-genai>=1.0.0
+streamlit>=1.40.0
+sqlparse>=0.5.0
+pandas>=2.0.0
