@@ -110,6 +110,30 @@ html, body, [class*="css"], .stMarkdown, button, input, textarea { font-family:'
 .stButton > button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 [data-testid="stSidebar"] .stButton > button p{ font-size:.8rem; white-space:nowrap; }
 @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+/* Readability: larger, calmer type */
+html{ font-size:17px; }
+.stMarkdown p, .stMarkdown li{ font-size:1.08rem; line-height:1.65; }
+[data-testid="stChatMessage"] .stMarkdown p, [data-testid="stChatMessage"] .stMarkdown li{ font-size:1.12rem; }
+[data-testid="stChatMessage"] h2{ font-size:1.35rem; margin-top:.6rem; }
+[data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p{ font-size:.95rem; color:var(--muted); line-height:1.7; }
+[data-testid="stCaptionContainer"] code{ font-size:.88rem; }
+[role="tab"] p{ font-size:1.02rem !important; }
+.stButton > button p{ font-size:1rem; }
+[data-testid="stSidebar"] .stButton > button p{ font-size:.9rem; }
+[data-testid="stMetricLabel"] p{ font-size:.88rem !important; }
+[data-testid="stMetricValue"]{ font-size:1.6rem; }
+[data-testid="stSidebar"] [data-testid="stMetricValue"]{ font-size:1.15rem; }
+[data-testid="stSidebar"] h3{ font-size:.82rem; }
+[data-testid="stChatInput"] textarea{ font-size:1.05rem; }
+.brand h1{ font-size:2.4rem; }
+.brand .client{ font-size:.85rem; }
+.tagline{ font-size:1.2rem; color:var(--ink); opacity:.85; }
+.feature{ padding:16px 18px; align-items:center; }
+.feature b{ font-size:1.08rem; }
+.feature span{ font-size:.98rem; }
+section[data-testid="stSidebar"]{ width:340px !important; min-width:340px !important; }
+[data-testid="stSidebar"] [data-testid="stMetricValue"]{ font-size:1.1rem; }
 </style>
 """
 
@@ -134,11 +158,11 @@ CAT_LOGO = """<svg width="{s}" height="{s}" viewBox="0 0 48 48" aria-label="Cont
 
 HERO_HTML = f"""
 <div class="brand">{CAT_LOGO.format(s=46)}<div><div class="client">{CLIENT} · unofficial demo</div><h1>{APP_NAME}</h1></div></div>
-<p class="tagline">Find the right clips, write on-brand social scripts, and reclaim storage safely, with a human approving every change.</p>
+<p class="tagline">Find clips. Write on-brand scripts. Free storage safely.</p>
 <div class="features">
-  <div class="feature">{ICON_SEARCH}<div><b>Find footage</b><span>Live database answers about shoots, clips and projects.</span></div></div>
-  <div class="feature">{ICON_PEN}<div><b>On-brand scripts</b><span>Built from real clips and checked against brand guidelines.</span></div></div>
-  <div class="feature">{ICON_SHIELD}<div><b>Safe storage</b><span>Plans need approval. Nothing is deleted; customer sites stay confidential.</span></div></div>
+  <div class="feature">{ICON_SEARCH}<div><b>Find footage</b><span>Ask about any shoot or clip</span></div></div>
+  <div class="feature">{ICON_PEN}<div><b>On-brand scripts</b><span>From real clips, on brand</span></div></div>
+  <div class="feature">{ICON_SHIELD}<div><b>Safe storage</b><span>Human-approved, never deletes</span></div></div>
 </div>
 """
 SIDE_BRAND = f'<div class="side-brand">{CAT_LOGO.format(s=30)}<span>{APP_NAME}</span></div>'
@@ -679,8 +703,7 @@ def write_log(entry):
 
 with st.sidebar:
     st.markdown(SIDE_BRAND, unsafe_allow_html=True)
-    st.caption(f"Client: **{CLIENT}** · unofficial demo, mock data")
-    st.caption(f"`{MODEL}` · ADK coordinator + MCP-style tools")
+    st.caption(f"`{MODEL}` · mock data")
     if api_key:
         st.success("API key loaded")
     else:
@@ -703,7 +726,7 @@ with st.sidebar:
     with st.expander("Live schema", icon=":material/schema:"):
         with _ro() as conn:
             st.text("\n\n".join(r[0] for r in conn.execute("SELECT sql FROM sqlite_master WHERE type='table'")))
-    st.caption("Registered tools: " + ", ".join(f.__name__ for f in MCP_TOOLS) + " · `mcp_delete_clips_admin` excluded")
+    st.caption(f"{len(MCP_TOOLS)} read-only MCP tools · delete tool excluded")
     if st.button("Clear chat", icon=":material/clear_all:", width="stretch"):
         ss.messages = []
         st.rerun()
@@ -714,14 +737,21 @@ tab_chat, tab_lib, tab_ok, tab_eval = st.tabs([":material/chat: Chat", ":materia
 
 def chips(tools: list) -> str:
     """Render the tool trace: agents and guardrails get an icon, tools a code chip."""
-    out = []
+    groups = []                                   # collapse repeats: read_query ×4
     for t in tools:
+        if groups and groups[-1][0] == t:
+            groups[-1][1] += 1
+        else:
+            groups.append([t, 1])
+    out = []
+    for t, n in groups:
+        times = f" ×{n}" if n > 1 else ""
         if t.startswith("agent:"):
             out.append(f":material/smart_toy: **{t[6:]}**")
         elif t.startswith("guard:"):
             out.append(f":material/shield: **{t[6:]}**")
         else:
-            out.append(f"`{t}`")
+            out.append(f"`{t}`{times}")
     return " → ".join(out)
 
 
@@ -770,13 +800,18 @@ with tab_lib:
     a.metric("Clips", len(view))
     b.metric("Size", f"{view['size_mb'].sum() / 1024:.1f} GB")
     c.metric("Unused", int((view["used"] == 0).sum()))
-    st.dataframe(view, width="stretch", hide_index=True)
+    st.dataframe(view, width="stretch", hide_index=True,      # fewer, friendlier columns
+                 column_order=["clip_id", "shoot", "codec", "resolution", "size_mb", "location", "tags", "used"],
+                 column_config={"clip_id": "Clip", "shoot": "Shoot", "codec": "Codec", "resolution": "Res",
+                                "size_mb": st.column_config.NumberColumn("Size (MB)", format="%.0f"),
+                                "location": "Location", "tags": "Tags",
+                                "used": st.column_config.CheckboxColumn("Used")})
     st.bar_chart(view.groupby("codec")["size_mb"].sum() / 1024, y_label="GB", color="#3dd6f5")
 
 with tab_ok:
-    st.caption("The agent can only propose. A human approves, and even then nothing is deleted.")
+    st.caption("Agent proposes · you approve · nothing is deleted")
     if not ss.plans:
-        st.info("No pending plans. Try the Free space preset.")
+        st.info("No pending plans yet.")
     for plan in list(ss.plans):
         with st.container(border=True):
             st.markdown(f"**{plan['plan_id']}** · {plan['clip_count']} clips · ~{plan['saved_gb']} GB freed")
@@ -798,9 +833,10 @@ with tab_ok:
         st.dataframe(pd.DataFrame(log), width="stretch", hide_index=True)
 
 with tab_eval:
-    st.caption("Golden answers are computed from studio.db, then an LLM judge scores each reply 1–5.")
+    st.caption("Answers checked against the database, scored 1–5 by an LLM judge")
     cases = golden_cases()
-    st.dataframe(pd.DataFrame(cases), width="stretch", hide_index=True)
+    with st.expander(f"Golden cases ({len(cases)})", icon=":material/fact_check:"):
+        st.dataframe(pd.DataFrame(cases), width="stretch", hide_index=True)
     if st.button("▶️ Run eval (~15 LLM calls)", disabled=not api_key):
         est, results, bar = new_stats(), [], st.progress(0.0)
         for i, case in enumerate(cases):
